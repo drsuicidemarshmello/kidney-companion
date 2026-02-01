@@ -47,7 +47,6 @@ export const ExerciseEnergySection: React.FC<ExerciseEnergySectionProps> = ({
         >
           <span className="text-lg">🥾</span>
           <span className="text-xs font-medium">Short walk</span>
-          <span className="text-[10px] text-muted-foreground">10-20 min</span>
           {shortWalks > 0 && (
             <span className="text-xs font-bold">×{shortWalks}</span>
           )}
@@ -61,7 +60,6 @@ export const ExerciseEnergySection: React.FC<ExerciseEnergySectionProps> = ({
         >
           <span className="text-lg">🚶</span>
           <span className="text-xs font-medium">Long walk</span>
-          <span className="text-[10px] text-muted-foreground">30+ min</span>
           {longWalks > 0 && (
             <span className="text-xs font-bold">×{longWalks}</span>
           )}
@@ -75,7 +73,6 @@ export const ExerciseEnergySection: React.FC<ExerciseEnergySectionProps> = ({
         >
           <Dumbbell className="w-5 h-5" />
           <span className="text-xs font-medium">Other</span>
-          <span className="text-[10px] text-muted-foreground">gym, yoga</span>
           {otherExercise > 0 && (
             <span className="text-xs font-bold">×{otherExercise}</span>
           )}

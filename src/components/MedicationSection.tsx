@@ -2,12 +2,11 @@ import React from 'react';
 import { Pill, AlertTriangle } from 'lucide-react';
 import { HealthData } from '@/hooks/useHealthData';
 
-interface TabletsSymptomsProps {
+interface MedicationSectionProps {
   medicationsTaken: number;
   medicationsTotal: number;
   symptoms: HealthData['symptoms'];
   onToggleMedication: (taken: number) => void;
-  onSetSymptom: (symptom: keyof HealthData['symptoms'], level: 'none' | 'mild' | 'strong') => void;
 }
 
 const medications = [
@@ -16,19 +15,11 @@ const medications = [
   { name: 'Calcium', time: 'Evening' },
 ];
 
-const symptomConfig = [
-  { id: 'swollenAnkles' as const, label: 'Swollen ankles', emoji: '👢' },
-  { id: 'nausea' as const, label: 'Nausea', emoji: '🤢' },
-  { id: 'tiredness' as const, label: 'Tiredness', emoji: '😴' },
-  { id: 'darkPee' as const, label: 'Dark pee', emoji: '💧' },
-];
-
-export const TabletsSymptoms: React.FC<TabletsSymptomsProps> = ({
+export const MedicationSection: React.FC<MedicationSectionProps> = ({
   medicationsTaken,
   medicationsTotal,
   symptoms,
   onToggleMedication,
-  onSetSymptom,
 }) => {
   const hasStrongSymptoms = Object.values(symptoms).some(s => s === 'strong');
   const allMedsTaken = medicationsTaken === medicationsTotal;
@@ -37,11 +28,11 @@ export const TabletsSymptoms: React.FC<TabletsSymptomsProps> = ({
     <div className="health-card">
       <div className="section-header">
         <Pill className="w-5 h-5 text-primary" />
-        <span>Tablets & Symptoms</span>
+        <span>Medication</span>
       </div>
 
       {/* Medications */}
-      <div className="mb-4">
+      <div>
         <div className="text-sm font-medium mb-2 flex items-center justify-between">
           <span>Today's medications</span>
           <span className={`text-xs px-2 py-0.5 rounded-full ${
@@ -79,43 +70,6 @@ export const TabletsSymptoms: React.FC<TabletsSymptomsProps> = ({
               <span className="text-xs text-muted-foreground">{med.time}</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Symptoms */}
-      <div>
-        <div className="text-sm font-medium mb-2">How are you feeling?</div>
-        <div className="grid grid-cols-2 gap-2">
-          {symptomConfig.map((symptom) => {
-            const level = symptoms[symptom.id];
-            return (
-              <div key={symptom.id} className="bg-secondary/50 rounded-xl p-2">
-                <div className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <span>{symptom.emoji}</span>
-                  <span>{symptom.label}</span>
-                </div>
-                <div className="flex gap-1">
-                  {(['none', 'mild', 'strong'] as const).map((lvl) => (
-                    <button
-                      key={lvl}
-                      onClick={() => onSetSymptom(symptom.id, lvl)}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-medium transition-all ${
-                        level === lvl
-                          ? lvl === 'none' 
-                            ? 'bg-success text-success-foreground' 
-                            : lvl === 'mild'
-                            ? 'bg-warning text-warning-foreground'
-                            : 'bg-danger text-danger-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      }`}
-                    >
-                      {lvl === 'none' ? '✓' : lvl}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 

@@ -52,7 +52,7 @@ export const PressurePulseSection: React.FC<PressurePulseSectionProps> = ({
     <div className="health-card">
       <div className="section-header">
         <Heart className="w-5 h-5 text-danger" />
-        <span>Blood Pressure & Pulse</span>
+        <span>Blood Pressure, Pulse & Weight</span>
       </div>
 
       {/* Add reading button */}
