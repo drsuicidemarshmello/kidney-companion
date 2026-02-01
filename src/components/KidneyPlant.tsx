@@ -18,15 +18,15 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
   const getPlantColors = () => {
     switch (state) {
       case 'thriving':
-        return { leaf: '#4ade80', leafDark: '#22c55e', leafEdge: '#16a34a' };
+        return { kidney: '#4ade80', kidneyDark: '#22c55e', kidneyEdge: '#16a34a' };
       case 'healthy':
-        return { leaf: '#6ee7b7', leafDark: '#34d399', leafEdge: '#10b981' };
+        return { kidney: '#6ee7b7', kidneyDark: '#34d399', kidneyEdge: '#10b981' };
       case 'okay':
-        return { leaf: '#86efac', leafDark: '#4ade80', leafEdge: '#22c55e' };
+        return { kidney: '#86efac', kidneyDark: '#4ade80', kidneyEdge: '#22c55e' };
       case 'stressed':
-        return { leaf: '#bef264', leafDark: '#a3e635', leafEdge: '#84cc16' };
+        return { kidney: '#bef264', kidneyDark: '#a3e635', kidneyEdge: '#84cc16' };
       case 'wilted':
-        return { leaf: '#d4d4aa', leafDark: '#a3a370', leafEdge: '#857d4d' };
+        return { kidney: '#d4d4aa', kidneyDark: '#a3a370', kidneyEdge: '#857d4d' };
     }
   };
 
@@ -45,14 +45,9 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
     }
   };
 
-  const getLeafRotation = () => {
-    if (state === 'wilted' || state === 'stressed') return -8;
-    return 0;
-  };
-
-  const getLeafScale = () => {
-    if (state === 'wilted') return 0.85;
-    if (state === 'stressed') return 0.92;
+  const getScale = () => {
+    if (state === 'wilted') return 0.9;
+    if (state === 'stressed') return 0.95;
     if (state === 'thriving') return 1.05;
     return 1;
   };
@@ -89,7 +84,7 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
         </div>
       )}
 
-      {/* The Plant SVG */}
+      {/* The Kidney Plant SVG */}
       <svg
         viewBox="0 0 200 280"
         className={`w-48 h-64 ${getPlantAnimation()}`}
@@ -106,6 +101,11 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
             <stop offset="0%" stopColor="#6b5344" />
             <stop offset="100%" stopColor="#4a3728" />
           </linearGradient>
+          <linearGradient id="kidneyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={colors.kidney} />
+            <stop offset="50%" stopColor={colors.kidneyDark} />
+            <stop offset="100%" stopColor={colors.kidneyEdge} />
+          </linearGradient>
         </defs>
         
         {/* Pot body */}
@@ -121,41 +121,54 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
 
         {/* Plant stem */}
         <path
-          d="M100 200 Q100 170 100 140"
+          d="M100 200 Q100 175 100 155"
           stroke="#4a9960"
-          strokeWidth="8"
+          strokeWidth="6"
           fill="none"
           strokeLinecap="round"
         />
 
-        {/* Kidney-shaped leaves */}
+        {/* Kidney-shaped body - actual kidney bean shape */}
         <g
           style={{
-            transform: `rotate(${getLeafRotation()}deg) scale(${getLeafScale()})`,
-            transformOrigin: '100px 140px',
+            transform: `scale(${getScale()})`,
+            transformOrigin: '100px 110px',
             transition: 'transform 0.5s ease-out',
           }}
         >
-          {/* Left kidney leaf */}
-          <g className="animate-leaf-wave" style={{ transformOrigin: '70px 120px' }}>
+          {/* Left kidney */}
+          <g className="animate-leaf-wave" style={{ transformOrigin: '70px 100px' }}>
             <path
-              d="M95 140 Q60 130 50 100 Q45 70 70 60 Q95 55 105 85 Q110 110 95 140"
-              fill={colors.leaf}
-              stroke={colors.leafEdge}
+              d="M35 100
+                 C35 60, 55 40, 75 45
+                 C90 48, 95 65, 90 85
+                 C85 100, 75 115, 60 120
+                 C45 125, 35 115, 35 100
+                 Z"
+              fill="url(#kidneyGradient)"
+              stroke={colors.kidneyEdge}
               strokeWidth="2"
             />
-            {/* Leaf vein */}
+            {/* Kidney hilum (indent) */}
             <path
-              d="M95 140 Q80 110 75 80"
-              stroke={colors.leafDark}
-              strokeWidth="2"
+              d="M70 75 Q80 85, 75 100"
+              stroke={colors.kidneyDark}
+              strokeWidth="3"
               fill="none"
               strokeLinecap="round"
+            />
+            {/* Inner detail lines */}
+            <path
+              d="M50 70 Q55 85, 50 105"
+              stroke={colors.kidneyDark}
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.5"
             />
             {/* Brown edges for stressed/wilted */}
             {(state === 'stressed' || state === 'wilted') && (
               <path
-                d="M50 100 Q45 70 70 60"
+                d="M35 100 C35 60, 55 40, 75 45"
                 stroke="#8b7355"
                 strokeWidth="4"
                 fill="none"
@@ -165,26 +178,39 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
             )}
           </g>
 
-          {/* Right kidney leaf */}
-          <g className="animate-leaf-wave" style={{ transformOrigin: '130px 120px', animationDelay: '0.5s' }}>
+          {/* Right kidney */}
+          <g className="animate-leaf-wave" style={{ transformOrigin: '130px 100px', animationDelay: '0.5s' }}>
             <path
-              d="M105 140 Q140 130 150 100 Q155 70 130 60 Q105 55 95 85 Q90 110 105 140"
-              fill={colors.leaf}
-              stroke={colors.leafEdge}
+              d="M165 100
+                 C165 60, 145 40, 125 45
+                 C110 48, 105 65, 110 85
+                 C115 100, 125 115, 140 120
+                 C155 125, 165 115, 165 100
+                 Z"
+              fill="url(#kidneyGradient)"
+              stroke={colors.kidneyEdge}
               strokeWidth="2"
             />
-            {/* Leaf vein */}
+            {/* Kidney hilum (indent) */}
             <path
-              d="M105 140 Q120 110 125 80"
-              stroke={colors.leafDark}
-              strokeWidth="2"
+              d="M130 75 Q120 85, 125 100"
+              stroke={colors.kidneyDark}
+              strokeWidth="3"
               fill="none"
               strokeLinecap="round"
+            />
+            {/* Inner detail lines */}
+            <path
+              d="M150 70 Q145 85, 150 105"
+              stroke={colors.kidneyDark}
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.5"
             />
             {/* Brown edges for stressed/wilted */}
             {(state === 'stressed' || state === 'wilted') && (
               <path
-                d="M150 100 Q155 70 130 60"
+                d="M165 100 C165 60, 145 40, 125 45"
                 stroke="#8b7355"
                 strokeWidth="4"
                 fill="none"
@@ -194,40 +220,41 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
             )}
           </g>
 
-          {/* Center small leaf */}
+          {/* Connecting vessels/ureter representation */}
           <path
-            d="M100 135 Q100 110 90 90 Q85 75 100 70 Q115 75 110 90 Q100 110 100 135"
-            fill={colors.leafDark}
-            stroke={colors.leafEdge}
-            strokeWidth="1.5"
+            d="M75 110 Q100 130, 125 110"
+            stroke="#4a9960"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
           />
         </g>
 
         {/* Flowers (when thriving) */}
         {showFlowers && (
           <>
-            <g className="animate-flower-bloom" style={{ transformOrigin: '65px 55px' }}>
-              <circle cx="65" cy="55" r="8" fill="#fca5a5" />
-              <circle cx="60" cy="50" r="5" fill="#fecaca" />
-              <circle cx="70" cy="50" r="5" fill="#fecaca" />
-              <circle cx="65" cy="60" r="5" fill="#fecaca" />
-              <circle cx="65" cy="55" r="3" fill="#fcd34d" />
+            <g className="animate-flower-bloom" style={{ transformOrigin: '50px 40px' }}>
+              <circle cx="50" cy="40" r="8" fill="#fca5a5" />
+              <circle cx="45" cy="35" r="5" fill="#fecaca" />
+              <circle cx="55" cy="35" r="5" fill="#fecaca" />
+              <circle cx="50" cy="45" r="5" fill="#fecaca" />
+              <circle cx="50" cy="40" r="3" fill="#fcd34d" />
             </g>
-            <g className="animate-flower-bloom" style={{ transformOrigin: '135px 55px', animationDelay: '0.2s' }}>
-              <circle cx="135" cy="55" r="7" fill="#c4b5fd" />
-              <circle cx="130" cy="51" r="4" fill="#ddd6fe" />
-              <circle cx="140" cy="51" r="4" fill="#ddd6fe" />
-              <circle cx="135" cy="59" r="4" fill="#ddd6fe" />
-              <circle cx="135" cy="55" r="2.5" fill="#fcd34d" />
+            <g className="animate-flower-bloom" style={{ transformOrigin: '150px 40px', animationDelay: '0.2s' }}>
+              <circle cx="150" cy="40" r="7" fill="#c4b5fd" />
+              <circle cx="145" cy="36" r="4" fill="#ddd6fe" />
+              <circle cx="155" cy="36" r="4" fill="#ddd6fe" />
+              <circle cx="150" cy="44" r="4" fill="#ddd6fe" />
+              <circle cx="150" cy="40" r="2.5" fill="#fcd34d" />
             </g>
           </>
         )}
 
-        {/* Pressure gauge tag in soil */}
+        {/* Health status tag in soil */}
         <g>
-          <rect x="85" y="195" width="30" height="12" rx="2" fill="#f5f5f4" stroke="#d6d3d1" />
-          <text x="100" y="204" textAnchor="middle" fontSize="7" fill="#57534e" fontWeight="600">
-            BP
+          <rect x="80" y="195" width="40" height="12" rx="2" fill="#f5f5f4" stroke="#d6d3d1" />
+          <text x="100" y="204" textAnchor="middle" fontSize="6" fill="#57534e" fontWeight="600">
+            KIDNEY
           </text>
         </g>
       </svg>
@@ -241,7 +268,7 @@ export const KidneyPlant: React.FC<KidneyPlantProps> = ({
         'bg-danger/20 text-danger'
       }`}>
         {state === 'thriving' && '🌸 Thriving!'}
-        {state === 'healthy' && '🌿 Healthy'}
+        {state === 'healthy' && '🫘 Healthy Kidneys'}
         {state === 'okay' && '🌱 Doing okay'}
         {state === 'stressed' && '😟 A bit stressed'}
         {state === 'wilted' && '🥀 Needs attention'}

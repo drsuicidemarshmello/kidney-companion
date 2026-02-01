@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useHealthData } from '@/hooks/useHealthData';
 import { KidneyPlant } from '@/components/KidneyPlant';
 import { StatusBand } from '@/components/StatusBand';
-import { WaterWeeSection } from '@/components/WaterWeeSection';
+import { FeelingsSection } from '@/components/FeelingsSection';
 import { PressurePulseSection } from '@/components/PressurePulseSection';
 import { FoodDrinkSection } from '@/components/FoodDrinkSection';
 import { ExerciseEnergySection } from '@/components/ExerciseEnergySection';
 import { EdemaSection } from '@/components/EdemaSection';
-import { TabletsSymptoms } from '@/components/TabletsSymptoms';
+import { MedicationSection } from '@/components/MedicationSection';
 import { EGFRSection } from '@/components/EGFRSection';
-import { MoodSection } from '@/components/MoodSection';
 import { DailySummary } from '@/components/DailySummary';
 import { WeeklyMotivationCard } from '@/components/WeeklyMotivationCard';
 import { SpeechInput } from '@/components/SpeechInput';
@@ -22,12 +21,8 @@ const Index = () => {
     showFlowers,
     showSunshine,
     isAtRisk,
-    addDrink,
-    setWeeColor,
     updateBloodPressure,
     updateWeight,
-    addSaltyMeal,
-    addAlcohol,
     setFoodRating,
     addExercise,
     setEnergyLevel,
@@ -45,15 +40,8 @@ const Index = () => {
     const lower = text.toLowerCase();
     
     // Parse voice commands
-    if (lower.includes('water') || lower.includes('drink') || lower.includes('glass')) {
-      if (lower.includes('big') || lower.includes('large')) {
-        addDrink('large');
-      } else {
-        addDrink('small');
-      }
-    }
     if (lower.includes('walk')) {
-      if (lower.includes('long') || lower.includes('30')) {
+      if (lower.includes('long')) {
         addExercise('long');
       } else {
         addExercise('short');
@@ -73,9 +61,6 @@ const Index = () => {
     }
     if (lower.includes('medicine') || lower.includes('tablet') || lower.includes('pill') || lower.includes('medication')) {
       toggleMedication(data.medicationsTotal);
-    }
-    if (lower.includes('salty') || lower.includes('takeaway') || lower.includes('fast food')) {
-      addSaltyMeal();
     }
   };
 
@@ -109,7 +94,7 @@ const Index = () => {
 
       {/* Main content */}
       <main className="max-w-lg mx-auto px-4 py-6 space-y-4">
-        {/* Status band */}
+        {/* Status band with greeting */}
         <StatusBand
           eGFR={data.eGFR}
           trend={data.eGFRTrend}
@@ -127,20 +112,24 @@ const Index = () => {
           />
         </div>
 
+        {/* Daily Summary - moved below plant */}
+        <DailySummary data={data} plantState={plantState} />
+
         {/* Speech Input */}
         <SpeechInput onTranscript={handleVoiceTranscript} />
 
         {/* Health Tracking Sections */}
         <div className="space-y-4">
-          {/* Section 1: Water & Wee */}
-          <WaterWeeSection
-            drinks={data.drinks}
-            weeColor={data.weeColor}
-            onAddDrink={addDrink}
-            onSetWeeColor={setWeeColor}
+          {/* Section 1: How Are You Feeling (replaced Water & Wee) */}
+          <FeelingsSection
+            symptoms={data.symptoms}
+            mood={data.mood}
+            moodStreak={data.moodStreak}
+            onSetSymptom={setSymptom}
+            onSetMood={setMood}
           />
 
-          {/* Section 2: Blood Pressure & Pulse */}
+          {/* Section 2: Blood Pressure, Pulse & Weight */}
           <PressurePulseSection
             bloodPressure={data.bloodPressure}
             weight={data.weight}
@@ -150,13 +139,7 @@ const Index = () => {
 
           {/* Section 3: Food & Drink */}
           <FoodDrinkSection
-            saltyMeals={data.saltyMeals}
-            alcoholDays={data.alcoholDays}
-            weeklySaltyMeals={data.weeklySaltyMeals}
-            weeklyAlcoholDays={data.weeklyAlcoholDays}
             lastFoodRating={data.lastFoodRating}
-            onAddSaltyMeal={addSaltyMeal}
-            onAddAlcohol={addAlcohol}
             onSetFoodRating={setFoodRating}
           />
 
@@ -178,13 +161,12 @@ const Index = () => {
             onSetEdema={setEdemaLevel}
           />
 
-          {/* Section 6: Tablets & Symptoms */}
-          <TabletsSymptoms
+          {/* Section 6: Medication (renamed from Tablets & Symptoms) */}
+          <MedicationSection
             medicationsTaken={data.medicationsTaken}
             medicationsTotal={data.medicationsTotal}
             symptoms={data.symptoms}
             onToggleMedication={toggleMedication}
-            onSetSymptom={setSymptom}
           />
 
           {/* Section 7: eGFR */}
@@ -195,16 +177,6 @@ const Index = () => {
             isOpen={showEGFRChart}
             onOpenChange={setShowEGFRChart}
           />
-
-          {/* Mood Section */}
-          <MoodSection
-            mood={data.mood}
-            moodStreak={data.moodStreak}
-            onSetMood={setMood}
-          />
-
-          {/* Daily Summary */}
-          <DailySummary data={data} plantState={plantState} />
         </div>
 
         {/* Footer spacing */}

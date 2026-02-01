@@ -1,29 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { Utensils, Camera, Wine, AlertCircle } from 'lucide-react';
+import { Utensils, Camera, AlertCircle, Lightbulb } from 'lucide-react';
 import { HealthData } from '@/hooks/useHealthData';
 
 interface FoodDrinkSectionProps {
-  saltyMeals: number;
-  alcoholDays: number;
-  weeklySaltyMeals: number;
-  weeklyAlcoholDays: number;
   lastFoodRating: HealthData['lastFoodRating'];
-  onAddSaltyMeal: () => void;
-  onAddAlcohol: () => void;
   onSetFoodRating: (rating: HealthData['lastFoodRating']) => void;
 }
 
 export const FoodDrinkSection: React.FC<FoodDrinkSectionProps> = ({
-  saltyMeals,
-  weeklySaltyMeals,
-  weeklyAlcoholDays,
   lastFoodRating,
-  onAddSaltyMeal,
-  onAddAlcohol,
   onSetFoodRating,
 }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [nutritionTip, setNutritionTip] = useState<string>(
+    '🥬 Too much potassium this week! Include more low-potassium vegetables like cabbage, cauliflower, and green beans in your meals.'
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoCapture = () => {
@@ -36,20 +28,31 @@ export const FoodDrinkSection: React.FC<FoodDrinkSectionProps> = ({
       // Simulate AI analysis
       setIsAnalyzing(true);
       setTimeout(() => {
-        const ratings = [
-          { rating: 'good' as const, message: '🥗 Great choice! Low sodium, kidney-friendly meal.' },
-          { rating: 'moderate' as const, message: '🍽️ Okay choice. Watch the portion size.' },
-          { rating: 'poor' as const, message: '🍟 High sodium detected. Limit these meals.' },
+        const analyses = [
+          { 
+            rating: 'good' as const, 
+            message: '🥗 Great choice! Low sodium and potassium-friendly meal.',
+            tip: '💚 Keep it up! Your kidney-friendly choices are paying off.'
+          },
+          { 
+            rating: 'moderate' as const, 
+            message: '🍽️ Moderate potassium content. Watch portion sizes.',
+            tip: '🥬 Try pairing this with low-potassium veggies next time.'
+          },
+          { 
+            rating: 'poor' as const, 
+            message: '⚠️ High in potassium/phosphorus. Limit these foods.',
+            tip: '🥬 Too much potassium this week! Include more low-potassium vegetables like cabbage, cauliflower, and green beans in your meals.'
+          },
         ];
-        const result = ratings[Math.floor(Math.random() * ratings.length)];
+        const result = analyses[Math.floor(Math.random() * analyses.length)];
         setAnalysisResult(result.message);
+        setNutritionTip(result.tip);
         onSetFoodRating(result.rating);
         setIsAnalyzing(false);
       }, 1500);
     }
   };
-
-  const showWarning = weeklySaltyMeals >= 3;
 
   return (
     <div className="health-card">
@@ -87,51 +90,24 @@ export const FoodDrinkSection: React.FC<FoodDrinkSectionProps> = ({
         </div>
       )}
 
-      {/* Quick log buttons */}
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => onSetFoodRating('good')}
-          className="btn-secondary flex-1 text-xs py-2"
-        >
-          🥗 Normal meal
-        </button>
-        <button
-          onClick={onAddSaltyMeal}
-          className="btn-secondary flex-1 text-xs py-2"
-        >
-          🧂 Salty/takeaway
-        </button>
-        <button
-          onClick={onAddAlcohol}
-          className="btn-secondary flex-1 text-xs py-2"
-        >
-          <Wine className="w-3 h-3 inline mr-1" />
-          Alcohol
-        </button>
-      </div>
-
-      {/* Weekly summary */}
+      {/* Nutrition tip/advice */}
       <div className="bg-secondary/50 rounded-xl p-3">
-        <div className="text-sm space-y-1">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Salty meals this week:</span>
-            <span className={`font-semibold ${weeklySaltyMeals >= 3 ? 'text-warning' : 'text-foreground'}`}>
-              {weeklySaltyMeals}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Alcohol days:</span>
-            <span className="font-semibold">{weeklyAlcoholDays}</span>
+        <div className="flex items-start gap-2">
+          <Lightbulb className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
+          <div>
+            <div className="text-sm font-medium text-foreground mb-1">Weekly Nutrition Insight</div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {nutritionTip}
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* Warning message */}
-        {showWarning && (
-          <div className="mt-2 flex items-start gap-2 text-xs text-warning-foreground bg-warning/10 rounded-lg p-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <span>A bit salty – your kidneys are working harder this week</span>
-          </div>
-        )}
+      {/* Helpful tips */}
+      <div className="mt-3 p-3 rounded-xl bg-primary/5">
+        <div className="text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">💡 Tip:</span> Take photos of your meals to get instant kidney-friendly feedback and track your nutrition patterns.
+        </div>
       </div>
     </div>
   );
